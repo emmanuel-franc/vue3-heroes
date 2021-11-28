@@ -1,49 +1,25 @@
 <template>
-  <!-- <div class="heroes-list">
-    <Hero v-for="hero in heroes" :key="hero.id" :hero-info="hero" />
-  </div> -->
-
   <router-view/>
 </template>
 
 <script>
-import md5 from 'crypto-js/md5';
-import { PRIVATE_KEY, PUBLIC_KEY } from '../config/keys.js'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
-  data() {
-    return {
-      heroes: null
-    };
-  },
   mounted() {
-    this.getData()
+    this.GET_HEROES_LIST()
   },
   methods: {
-    async getData() {
-      const ts = Date.now()
-      const hash = md5(ts + PRIVATE_KEY + PUBLIC_KEY).toString()
+    ...mapActions(['GET_HEROES_LIST']),
 
-      try {
-        this.heroes = await fetch(`http://gateway.marvel.com/v1/public/characters?ts=${ts}&apikey=${PUBLIC_KEY}&hash=${hash}`)
-          .then(res => res.json())
-          .then(info => {
-            console.log('info.data', info.data)
-            return info.data.results
-          }
-        )
-      } catch(e) {
-        throw new Error(e)
-      }
-    }
-  }
+  },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -51,8 +27,16 @@ export default {
   margin-top: 60px;
 }
 
-.heroes-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+a {
+  color: #fff;
+  text-decoration: none;;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+body {
+  transition: background-color 0.4s;
 }
 </style>
