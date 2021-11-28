@@ -1,19 +1,17 @@
 <template>
-  <div class="heroes-list">
+  <!-- <div class="heroes-list">
     <Hero v-for="hero in heroes" :key="hero.id" :hero-info="hero" />
-  </div>
+  </div> -->
+
+  <router-view/>
 </template>
 
 <script>
 import md5 from 'crypto-js/md5';
-import Hero from './components/Hero.vue'
 import { PRIVATE_KEY, PUBLIC_KEY } from '../config/keys.js'
 
 export default {
   name: 'App',
-  components: {
-    Hero
-  },
   data() {
     return {
       heroes: null
