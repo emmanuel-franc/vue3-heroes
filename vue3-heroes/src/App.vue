@@ -1,26 +1,42 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <router-view/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  mounted() {
+    this.GET_HEROES_LIST()
+  },
+  methods: {
+    ...mapActions(['GET_HEROES_LIST']),
+
+  },
 }
 </script>
 
-<style>
+<style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+body {
+  transition: background-color 0.4s;
 }
 </style>
