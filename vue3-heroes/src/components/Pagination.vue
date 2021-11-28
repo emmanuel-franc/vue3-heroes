@@ -20,7 +20,7 @@ export default {
     ...mapActions(['GET_HEROES_LIST', 'UPDATE_CURRENT_PAGE']),
 
     prev() {
-      if(this.currentPage > 0) {
+      if(this.currentPage > 1) {
         this.GET_HEROES_LIST(this.offset - OFFSET_BASE_VALUE)
         this.UPDATE_CURRENT_PAGE(this.currentPage - 1)
       }
