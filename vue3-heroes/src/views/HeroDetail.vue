@@ -2,7 +2,7 @@
 <template>
   <div class="hero-detail">
     <BackToList />
-    
+
     <img class="hero-detail__image" :src="`${hero.thumbnail.path}.${hero.thumbnail.extension}`" />
 
     <h1>{{ hero.name }}</h1>
@@ -34,8 +34,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { onBeforeMount } from 'vue'
+import {  useStore } from 'vuex'
+import { onBeforeMount, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import BackToList from '@/components/BackToList.vue'
 
 export default {
@@ -44,17 +45,19 @@ export default {
     BackToList,
   },
   setup() {
+    const store = useStore()
+    const route = useRoute()
+
+    const hero = computed(() => store.getters.findHero(route.params.id))
+
     onBeforeMount(() => {
       document.body.style.backgroundColor = '#a32327'
     })
-  },
-  computed: {
-    ...mapGetters(['findHero']),
 
-    hero() {
-      return this.findHero(this.$route.params.id)
+    return {
+      hero,
     }
-  }
+  },
 }
 </script>
 
