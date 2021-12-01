@@ -3,17 +3,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
 export default {
   name: 'App',
-  mounted() {
-    this.GET_HEROES_LIST()
-  },
-  methods: {
-    ...mapActions(['GET_HEROES_LIST']),
-
-  },
 }
 </script>
 

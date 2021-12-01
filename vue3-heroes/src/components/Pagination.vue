@@ -1,6 +1,6 @@
 <template>
   <div class="pagination">
-    <button class="pagination__prev" :class="{'pagination--disabled': currentPage === 1}" type="button" @click="prev()">&#60;</button>
+    <button class="pagination__prev" :class="{'pagination--disabled': currentPage <= 1}" type="button" @click="prev()">&#60;</button>
     <button class="pagination__next" :class="{'pagination--disabled': currentPage === totalPages}" type="button" @click="next()">&#62;</button>
 
     <p class="pagination__counter">
@@ -10,31 +10,40 @@
 </template>
 
 <script>
-
-import { mapActions, mapState } from 'vuex'
+import { computed } from 'vue'
+import { useStore, mapActions } from 'vuex'
 import { OFFSET_BASE_VALUE } from '../constants/constants.js'
 
 export default {
   name: 'HeroItem',
+  setup() {
+    const store = useStore()
+
+    const total = computed(() => store.state.total)
+    const currentPage = computed(() => store.state.currentPage)
+
+    return {
+      total,
+      currentPage,
+    }
+  },
   methods: {
-    ...mapActions(['GET_HEROES_LIST', 'UPDATE_CURRENT_PAGE']),
+    ...mapActions(['UPDATE_CURRENT_PAGE']),
 
     prev() {
       if(this.currentPage > 1) {
-        this.GET_HEROES_LIST(this.offset - OFFSET_BASE_VALUE)
         this.UPDATE_CURRENT_PAGE(this.currentPage - 1)
+        this.$router.replace({ name: 'HeroesList', params: { pageNumber: this.currentPage } })
       }
     },
     next() {
       if(this.currentPage < this.totalPages) {
-        this.GET_HEROES_LIST(this.offset + OFFSET_BASE_VALUE)
         this.UPDATE_CURRENT_PAGE(this.currentPage + 1)
+        this.$router.replace({ name: 'HeroesList', params: { pageNumber: this.currentPage } })
       }
     },
   },
   computed: {
-    ...mapState(['offset', 'total', 'currentPage']),
-
     totalPages() {
       return Math.ceil(this.total / OFFSET_BASE_VALUE)
     }

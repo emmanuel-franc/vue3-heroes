@@ -1,60 +1,79 @@
 
 <template>
   <div class="hero-detail">
-    <BackToList />
-    
-    <img class="hero-detail__image" :src="`${hero.thumbnail.path}.${hero.thumbnail.extension}`" />
+    <Loader v-if="isLoading" />
+    <template v-else>
+      <BackToList />
 
-    <h1>{{ hero.name }}</h1>
+      <img class="hero-detail__image" :src="`${hero.thumbnail.path}.${hero.thumbnail.extension}`" />
 
-    <p v-if="hero.description">{{ hero.description }}</p>
+      <h1>{{ hero.name }}</h1>
 
-    <p v-else>No description available!</p>
+      <p v-if="hero.description">{{ hero.description }}</p>
 
-    <div class="hero-detail__lists">
-      <div>
-        <h4>Comics</h4>
-        <ul v-if="hero.comics.items.length">
-          <li v-for="(comic, index) in hero.comics.items" :key="`comic-${index}`">{{ comic.name }}</li>
-        </ul>
+      <p v-else>No description available!</p>
 
-        <p v-else>No list available!</p>
+      <div class="hero-detail__lists">
+        <div>
+          <h4>Comics</h4>
+          <ul v-if="hero.comics.items.length">
+            <li v-for="(comic, index) in hero.comics.items" :key="`comic-${index}`">{{ comic.name }}</li>
+          </ul>
+
+          <p v-else>No list available!</p>
+        </div>
+
+        <div>
+          <h4>Series</h4>
+          <ul v-if="hero.series.items.length">
+            <li v-for="(serie, index) in hero.series.items" :key="`serie-${index}`">{{ serie.name }}</li>
+          </ul>
+
+          <p v-else>No list available!</p>
+        </div>
       </div>
-
-      <div>
-        <h4>Series</h4>
-        <ul v-if="hero.series.items.length">
-          <li v-for="(serie, index) in hero.series.items" :key="`serie-${index}`">{{ serie.name }}</li>
-        </ul>
-
-        <p v-else>No list available!</p>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { onBeforeMount, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import Loader from '@/components/Loader.vue'
 import BackToList from '@/components/BackToList.vue'
+import { GET_HERO } from '../services/getHero.service.js'
 
 export default {
   name: 'HeroDetail',
   components: {
     BackToList,
+    Loader,
   },
   setup() {
+    const store = useStore()
+    const route = useRoute()
+
+    const hero = computed(() => store.getters.findHero(route.params.id))
+
     onBeforeMount(() => {
       document.body.style.backgroundColor = '#a32327'
     })
-  },
-  computed: {
-    ...mapGetters(['findHero']),
 
-    hero() {
-      return this.findHero(this.$route.params.id)
+    if(!hero.value) {
+      const { hero, isLoading} = GET_HERO(parseInt(route.params.id))
+
+      return {
+        hero: hero,
+        isLoading
+      }
     }
-  }
+
+    return {
+      hero,
+      isLoading: false
+    }
+  },
 }
 </script>
 
