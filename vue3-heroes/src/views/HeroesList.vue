@@ -21,6 +21,7 @@
 <script>
 import { onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { GET_HEROES_LIST } from '../services/getHeroesList.service.js'
 import HeroItem from '@/components/HeroItem.vue'
 import Pagination from '@/components/Pagination.vue'
@@ -35,8 +36,13 @@ export default {
   },
   setup() { 
     const store = useStore()
+    const route = useRoute()
 
-    const { heroesList, isLoading, infos, error } = GET_HEROES_LIST(store.state.offset)
+    if (route.params.pageNumber) {
+      store.dispatch('UPDATE_CURRENT_PAGE', parseInt(route.params.pageNumber))
+    }
+
+    const { heroesList, isLoading, infos, error } = GET_HEROES_LIST()
 
     onBeforeMount(() => {
       document.body.style.backgroundColor = '#0789d4'

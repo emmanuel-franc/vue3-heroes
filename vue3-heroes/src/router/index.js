@@ -4,7 +4,7 @@ import HeroDetail from '../views/HeroDetail.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/:pageNumber?',
     name: 'HeroesList',
     component: HeroesList
   },

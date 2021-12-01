@@ -2,7 +2,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import md5 from 'crypto-js/md5'
 import { PRIVATE_KEY, PUBLIC_KEY } from '../../config/keys.js'
-import { LIMIT } from '../constants/constants.js'
+import { LIMIT, OFFSET_BASE_VALUE} from '../constants/constants.js'
 
 const ts = Date.now()
 const hash = md5(ts + PRIVATE_KEY + PUBLIC_KEY).toString()
@@ -14,16 +14,15 @@ export const GET_HEROES_LIST = () => {
   const error = ref({})
   const store = useStore()
 
-  watch(() => store.state.offset, () => {
-    getHeroesList(store.state.offset)
+  watch(() => store.state.currentPage, () => {
+    getHeroesList()
   });
-  
-  
+
   const getHeroesList = async () => {
     isLoading.value = true
 
     try {
-      const response = await fetch(`http://gateway.marvel.com/v1/public/characters?ts=${ts}&apikey=${PUBLIC_KEY}&hash=${hash}&offset=${store.state.offset}&limit=${LIMIT}`)
+      const response = await fetch(`http://gateway.marvel.com/v1/public/characters?ts=${ts}&apikey=${PUBLIC_KEY}&hash=${hash}&offset=${(store.state.currentPage - 1) * OFFSET_BASE_VALUE}&limit=${LIMIT}`)
       const json = await response.json().then(info => info.data)
 
       heroesList.value = json.results

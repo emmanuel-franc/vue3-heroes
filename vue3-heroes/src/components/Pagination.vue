@@ -19,29 +19,27 @@ export default {
   setup() {
     const store = useStore()
 
-    const offset = computed(() => store.state.offset)
     const total = computed(() => store.state.total)
     const currentPage = computed(() => store.state.currentPage)
 
     return {
-      offset,
       total,
       currentPage,
     }
   },
   methods: {
-    ...mapActions(['UPDATE_CURRENT_PAGE', 'UPDATE_OFFSET']),
+    ...mapActions(['UPDATE_CURRENT_PAGE']),
 
     prev() {
       if(this.currentPage > 1) {
         this.UPDATE_CURRENT_PAGE(this.currentPage - 1)
-        this.UPDATE_OFFSET(this.offset - OFFSET_BASE_VALUE)
+        this.$router.replace({ name: 'HeroesList', params: { pageNumber: this.currentPage } })
       }
     },
     next() {
       if(this.currentPage < this.totalPages) {
         this.UPDATE_CURRENT_PAGE(this.currentPage + 1)
-        this.UPDATE_OFFSET(this.offset + OFFSET_BASE_VALUE)
+        this.$router.replace({ name: 'HeroesList', params: { pageNumber: this.currentPage } })
       }
     },
   },
